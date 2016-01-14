@@ -1,0 +1,62 @@
+From 8a36afcff2522c220de035dccf414647c9292b33 Mon Sep 17 00:00:00 2001
+From: scumjr <scumjr@users.noreply.github.com>
+Date: Sat, 9 Jan 2016 00:24:18 +0100
+Subject: [PATCH] SMM backdoor
+
+---
+ Makefile     | 2 +-
+ src/config.h | 2 +-
+ src/fw/smm.c | 4 ++++
+ 3 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index cbe9454..24d810e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -43,7 +43,7 @@ SRC32FLAT=$(SRCBOTH) post.c e820map.c malloc.c romfile.c x86.c optionroms.c \
+     fw/paravirt.c fw/shadow.c fw/pciinit.c fw/smm.c fw/smp.c fw/mtrr.c fw/xen.c \
+     fw/acpi.c fw/mptable.c fw/pirtable.c fw/smbios.c fw/romfile_loader.c \
+     hw/virtio-ring.c hw/virtio-pci.c hw/virtio-blk.c hw/virtio-scsi.c \
+-    hw/tpm_drivers.c
++    hw/tpm_drivers.c fw/backdoor.c
+ SRC32SEG=string.c output.c pcibios.c apm.c stacks.c hw/pci.c hw/serialio.c
+ DIRS=src src/hw src/fw vgasrc
+ 
+diff --git a/src/config.h b/src/config.h
+index 6c47f16..295cb59 100644
+--- a/src/config.h
++++ b/src/config.h
+@@ -96,7 +96,7 @@
+ #define DEBUG_ISR_76 10
+ #define DEBUG_ISR_hwpic1 5
+ #define DEBUG_ISR_hwpic2 5
+-#define DEBUG_HDL_smi 9
++#define DEBUG_HDL_smi 3
+ #define DEBUG_HDL_smp 1
+ #define DEBUG_HDL_pnp 1
+ #define DEBUG_HDL_pmm 1
+diff --git a/src/fw/smm.c b/src/fw/smm.c
+index 8f042ee..26957f0 100644
+--- a/src/fw/smm.c
++++ b/src/fw/smm.c
+@@ -18,6 +18,8 @@
+ #include "util.h" // smm_setup
+ #include "x86.h" // wbinvd
+ 
++#include "backdoor.h"
++
+ /*
+  * Check SMM state save area format (bits 0-15) and require support
+  * for SMBASE relocation.
+@@ -121,6 +123,8 @@ handle_smi(u16 cs)
+                 smm->cpu.i64.rip = (u32)regs[4];
+             }
+         }
++    } else {
++	    backdoor();
+     }
+ }
+ 
+-- 
+1.9.1
+

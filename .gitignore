@@ -1,0 +1,6 @@
+*.o
+*.raw
+hijack_vdso.h
+payload.h
+smm-trigger-local
+trigger_smi
