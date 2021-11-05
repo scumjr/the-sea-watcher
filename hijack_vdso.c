@@ -14,7 +14,7 @@ typedef unsigned char UCHAR;
 
 /******************************************************************************/
 
-#include "/tmp/payload.h"
+#include "payload.h"
 
 #define PATTERN1		0x55AA55AA
 #define PATTERN2		0xAA55AA55
